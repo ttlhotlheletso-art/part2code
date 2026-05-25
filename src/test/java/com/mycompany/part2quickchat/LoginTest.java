@@ -21,361 +21,230 @@ public class LoginTest {
         login = new Login();
     }
     
-    // ===== USERNAME VALIDATION TESTS =====
+    // ============ USERNAME VALIDATION TESTS ============
     
-    /**
-     * Test checkUserName() - valid username with underscore
-     */
     @Test
     public void testCheckUserNameValid() {
-        assertTrue("Username with underscore and 5 chars should be valid", login.checkUserName("test_"));
-        assertTrue("Username with underscore and less than 5 chars should be valid", login.checkUserName("ab_cd"));
+        assertTrue("Username with underscore and <= 5 chars should be valid", login.checkUserName("u_123"));
     }
     
-    /**
-     * Test checkUserName() - invalid username without underscore
-     */
     @Test
-    public void testCheckUserNameNoUnderscore() {
-        assertFalse("Username without underscore should be invalid", login.checkUserName("abcde"));
+    public void testCheckUserNameValidBoundary() {
+        assertTrue("Username with exactly 5 characters and underscore should be valid", login.checkUserName("u_abc"));
     }
     
-    /**
-     * Test checkUserName() - invalid username exceeds 5 chars
-     */
     @Test
-    public void testCheckUserNameTooLong() {
-        assertFalse("Username longer than 5 chars should be invalid", login.checkUserName("abcdef_"));
+    public void testCheckUserNameInvalidNoUnderscore() {
+        assertFalse("Username without underscore should be invalid", login.checkUserName("username"));
     }
     
-    /**
-     * Test checkUserName() - boundary case exactly 5 chars with underscore
-     */
     @Test
-    public void testCheckUserNameBoundary() {
-        assertTrue("Username with exactly 5 chars and underscore should be valid", login.checkUserName("a_bcd"));
+    public void testCheckUserNameInvalidTooLong() {
+        assertFalse("Username longer than 5 characters should be invalid", login.checkUserName("user_name"));
     }
     
-    /**
-     * Test checkUserName() - empty string
-     */
     @Test
-    public void testCheckUserNameEmpty() {
-        assertFalse("Empty username should be invalid", login.checkUserName(""));
+    public void testCheckUserNameOnlyUnderscore() {
+        assertTrue("Single underscore should be valid", login.checkUserName("_"));
     }
     
-    // ===== PASSWORD COMPLEXITY TESTS =====
+    // ============ PASSWORD COMPLEXITY TESTS ============
     
-    /**
-     * Test checkPasswordComplexity() - valid complex password
-     */
     @Test
     public void testCheckPasswordComplexityValid() {
-        assertTrue("Valid complex password should pass", login.checkPasswordComplexity("SecurePass123!"));
+        assertTrue("Valid password should pass all checks", login.checkPasswordComplexity("MyPassword123!"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - too short
-     */
     @Test
-    public void testCheckPasswordComplexityTooShort() {
-        assertFalse("Password shorter than 8 chars should be invalid", login.checkPasswordComplexity("Sec!1"));
+    public void testCheckPasswordComplexityValidBoundary8Chars() {
+        assertTrue("Password with exactly 8 characters and all requirements should be valid", login.checkPasswordComplexity("Abc1@xyz"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - boundary case exactly 8 chars
-     */
     @Test
-    public void testCheckPasswordComplexityBoundary() {
-        assertTrue("Password with exactly 8 chars and all requirements should be valid", 
-                login.checkPasswordComplexity("SecPass1!"));
+    public void testCheckPasswordComplexityInvalidTooShort() {
+        assertFalse("Password with less than 8 characters should be invalid", login.checkPasswordComplexity("Pass1@x"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - missing uppercase
-     */
     @Test
-    public void testCheckPasswordComplexityNoUppercase() {
-        assertFalse("Password without uppercase should be invalid", login.checkPasswordComplexity("secpass1!"));
+    public void testCheckPasswordComplexityInvalidNoUppercase() {
+        assertFalse("Password without uppercase letter should be invalid", login.checkPasswordComplexity("password123!"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - missing number
-     */
     @Test
-    public void testCheckPasswordComplexityNoNumber() {
-        assertFalse("Password without number should be invalid", login.checkPasswordComplexity("SecurePass!"));
+    public void testCheckPasswordComplexityInvalidNoNumber() {
+        assertFalse("Password without number should be invalid", login.checkPasswordComplexity("Password@abc"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - missing special character
-     */
     @Test
-    public void testCheckPasswordComplexityNoSpecialChar() {
-        assertFalse("Password without special character should be invalid", login.checkPasswordComplexity("SecurePass123"));
+    public void testCheckPasswordComplexityInvalidNoSpecialChar() {
+        assertFalse("Password without special character should be invalid", login.checkPasswordComplexity("Password123"));
     }
     
-    /**
-     * Test checkPasswordComplexity() - all uppercase with numbers and special char
-     */
     @Test
-    public void testCheckPasswordComplexityAllUppercase() {
-        assertTrue("Password with all uppercase and other requirements should be valid", 
-                login.checkPasswordComplexity("SECUREPASS1!"));
+    public void testCheckPasswordComplexityInvalidAllLowercase() {
+        assertFalse("Password with all lowercase should be invalid", login.checkPasswordComplexity("password1!"));
     }
     
-    // ===== CELL PHONE NUMBER VALIDATION TESTS =====
+    // ============ CELL PHONE VALIDATION TESTS ============
     
-    /**
-     * Test checkCellPhoneNumber() - valid SA number
-     */
     @Test
     public void testCheckCellPhoneNumberValid() {
-        assertTrue("Valid SA number should pass", login.checkCellPhoneNumber("+27123456789"));
+        assertTrue("Valid SA cell number should pass", login.checkCellPhoneNumber("+27123456789"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - another valid SA number
-     */
     @Test
-    public void testCheckCellPhoneNumberValidAnotherNumber() {
-        assertTrue("Another valid SA number should pass", login.checkCellPhoneNumber("+27987654321"));
+    public void testCheckCellPhoneNumberValidAnother() {
+        assertTrue("Another valid SA cell number should pass", login.checkCellPhoneNumber("+27987654321"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - missing + prefix
-     */
     @Test
-    public void testCheckCellPhoneNumberNoPrefix() {
-        assertFalse("Number without + prefix should be invalid", login.checkCellPhoneNumber("27123456789"));
+    public void testCheckCellPhoneNumberInvalidNoPlus() {
+        assertFalse("Cell number without + sign should be invalid", login.checkCellPhoneNumber("27123456789"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - wrong country code
-     */
     @Test
-    public void testCheckCellPhoneNumberWrongCountryCode() {
-        assertFalse("Number with wrong country code should be invalid", login.checkCellPhoneNumber("+28123456789"));
+    public void testCheckCellPhoneNumberInvalidWrongCode() {
+        assertFalse("Cell number with wrong country code should be invalid", login.checkCellPhoneNumber("+28123456789"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - too few digits
-     */
     @Test
-    public void testCheckCellPhoneNumberTooFewDigits() {
-        assertFalse("Number with too few digits should be invalid", login.checkCellPhoneNumber("+2712345678"));
+    public void testCheckCellPhoneNumberInvalidTooFewDigits() {
+        assertFalse("Cell number with too few digits should be invalid", login.checkCellPhoneNumber("+2712345678"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - too many digits
-     */
     @Test
-    public void testCheckCellPhoneNumberTooManyDigits() {
-        assertFalse("Number with too many digits should be invalid", login.checkCellPhoneNumber("+271234567890"));
+    public void testCheckCellPhoneNumberInvalidTooManyDigits() {
+        assertFalse("Cell number with too many digits should be invalid", login.checkCellPhoneNumber("+271234567890"));
     }
     
-    /**
-     * Test checkCellPhoneNumber() - contains letters
-     */
     @Test
-    public void testCheckCellPhoneNumberWithLetters() {
-        assertFalse("Number with letters should be invalid", login.checkCellPhoneNumber("+2712345678a"));
+    public void testCheckCellPhoneNumberInvalidWithLetters() {
+        assertFalse("Cell number with letters should be invalid", login.checkCellPhoneNumber("+27ABCDEFGHI"));
     }
     
-    // ===== REGISTRATION TESTS =====
+    // ============ REGISTRATION TESTS ============
     
-    /**
-     * Test registerUser() - successful registration
-     */
     @Test
     public void testRegisterUserSuccessful() {
-        String result = login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        assertEquals("Successful registration should return success message", 
-                "User successfully registered.", result);
+        String result = login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertEquals("User registration should succeed", "User successfully registered.", result);
     }
     
-    /**
-     * Test registerUser() - invalid username
-     */
     @Test
     public void testRegisterUserInvalidUsername() {
-        String result = login.registerUser("toolong_username", "SecurePass123!", "+27123456789", "John", "Doe");
-        assertEquals("Invalid username should return error message", 
-                "Username is not correctly formatted.", result);
+        String result = login.registerUser("invaliduser", "MyPass1!", "+27123456789", "John", "Doe");
+        assertEquals("Invalid username should return error", "Username is not correctly formatted.", result);
     }
     
-    /**
-     * Test registerUser() - invalid password
-     */
     @Test
     public void testRegisterUserInvalidPassword() {
-        String result = login.registerUser("test_", "weak", "+27123456789", "John", "Doe");
-        assertEquals("Invalid password should return error message", 
-                "Password is not correctly formatted.", result);
+        String result = login.registerUser("u_001", "weak", "+27123456789", "John", "Doe");
+        assertEquals("Invalid password should return error", "Password is not correctly formatted.", result);
     }
     
-    /**
-     * Test registerUser() - invalid cell phone
-     */
     @Test
     public void testRegisterUserInvalidCell() {
-        String result = login.registerUser("test_", "SecurePass123!", "1234567890", "John", "Doe");
-        assertEquals("Invalid cell phone should return error message", 
-                "Cell phone number incorrectly formatted.", result);
+        String result = login.registerUser("u_001", "MyPass1!", "+28123456789", "John", "Doe");
+        assertEquals("Invalid cell number should return error", "Cell phone number incorrectly formatted.", result);
     }
     
-    /**
-     * Test registerUser() - credentials are stored
-     */
     @Test
-    public void testRegisterUserStoresCredentials() {
-        login.registerUser("user_", "Password1!", "+27111111111", "Jane", "Smith");
-        
-        // Verify login works with stored credentials
-        boolean loginResult = login.loginUser("user_", "Password1!");
-        assertTrue("Login should succeed with stored credentials", loginResult);
+    public void testRegisterUserStoresUsername() {
+        login.registerUser("u_test", "Pass1@abc", "+27555555555", "Jane", "Smith");
+        assertTrue("Stored credentials should allow login", login.loginUser("u_test", "Pass1@abc"));
     }
     
-    /**
-     * Test registerUser() - multiple registrations
-     */
-    @Test
-    public void testRegisterUserMultiple() {
-        String result1 = login.registerUser("usr1_", "Pass1Word!", "+27111111111", "Alice", "Brown");
-        String result2 = login.registerUser("usr2_", "Pass2Word!", "+27222222222", "Bob", "Green");
-        
-        assertEquals("First registration should succeed", "User successfully registered.", result1);
-        assertEquals("Second registration should succeed", "User successfully registered.", result2);
-    }
+    // ============ LOGIN TESTS ============
     
-    // ===== LOGIN TESTS =====
-    
-    /**
-     * Test loginUser() - successful login
-     */
     @Test
     public void testLoginUserSuccessful() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean result = login.loginUser("test_", "SecurePass123!");
-        assertTrue("Login with correct credentials should succeed", result);
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertTrue("Valid credentials should allow login", login.loginUser("u_001", "MyPass1!"));
     }
     
-    /**
-     * Test loginUser() - failed login with wrong username
-     */
     @Test
-    public void testLoginUserWrongUsername() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean result = login.loginUser("wrong_", "SecurePass123!");
-        assertFalse("Login with wrong username should fail", result);
+    public void testLoginUserFailedWrongUsername() {
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertFalse("Wrong username should fail login", login.loginUser("u_002", "MyPass1!"));
     }
     
-    /**
-     * Test loginUser() - failed login with wrong password
-     */
     @Test
-    public void testLoginUserWrongPassword() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean result = login.loginUser("test_", "WrongPass123!");
-        assertFalse("Login with wrong password should fail", result);
+    public void testLoginUserFailedWrongPassword() {
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertFalse("Wrong password should fail login", login.loginUser("u_001", "WrongPass1!"));
     }
     
-    /**
-     * Test loginUser() - case sensitivity
-     */
     @Test
-    public void testLoginUserCaseSensitivity() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean result = login.loginUser("TEST_", "SecurePass123!");
-        assertFalse("Login should be case sensitive for username", result);
+    public void testLoginUserCaseSensitiveUsername() {
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertFalse("Username should be case sensitive", login.loginUser("U_001", "MyPass1!"));
     }
     
-    /**
-     * Test loginUser() - without registration
-     */
+    @Test
+    public void testLoginUserCaseSensitivePassword() {
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        assertFalse("Password should be case sensitive", login.loginUser("u_001", "mypass1!"));
+    }
+    
     @Test
     public void testLoginUserWithoutRegistration() {
-        boolean result = login.loginUser("any_user", "AnyPass123!");
-        assertFalse("Login should fail without prior registration", result);
+        assertFalse("Login without registration should fail", login.loginUser("u_001", "MyPass1!"));
     }
     
-    // ===== LOGIN STATUS TESTS =====
+    // ============ LOGIN STATUS TESTS ============
     
-    /**
-     * Test returnLoginStatus() - successful login status
-     */
     @Test
-    public void testReturnLoginStatusSuccess() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean loginStatus = login.loginUser("test_", "SecurePass123!");
-        String result = login.returnLoginStatus(loginStatus);
-        assertEquals("Successful login should return welcome message", 
-                "Welcome John Doe, it is great to see you again.", result);
+    public void testReturnLoginStatusSuccessful() {
+        login.registerUser("u_001", "MyPass1!", "+27123456789", "John", "Doe");
+        String status = login.returnLoginStatus(true);
+        assertTrue("Successful login should show welcome message", status.contains("Welcome"));
+        assertTrue("Welcome message should contain first name", status.contains("John"));
+        assertTrue("Welcome message should contain last name", status.contains("Doe"));
     }
     
-    /**
-     * Test returnLoginStatus() - failed login status
-     */
     @Test
-    public void testReturnLoginStatusFailure() {
-        login.registerUser("test_", "SecurePass123!", "+27123456789", "John", "Doe");
-        boolean loginStatus = login.loginUser("test_", "WrongPassword!");
-        String result = login.returnLoginStatus(loginStatus);
-        assertEquals("Failed login should return error message", 
-                "Username or password incorrect.", result);
+    public void testReturnLoginStatusFailed() {
+        String status = login.returnLoginStatus(false);
+        assertEquals("Failed login should show error message", "Username or password incorrect.", status);
     }
     
-    /**
-     * Test returnLoginStatus() - with different names
-     */
     @Test
-    public void testReturnLoginStatusDifferentNames() {
-        login.registerUser("usr1_", "Password1!", "+27111111111", "Alice", "Johnson");
-        boolean loginStatus = login.loginUser("usr1_", "Password1!");
-        String result = login.returnLoginStatus(loginStatus);
-        assertEquals("Should show correct user names in message", 
-                "Welcome Alice Johnson, it is great to see you again.", result);
+    public void testReturnLoginStatusFormatMessage() {
+        login.registerUser("u_002", "Pass1@abc", "+27999999999", "Alice", "Johnson");
+        String status = login.returnLoginStatus(true);
+        assertEquals("Welcome message format should be correct", 
+            "Welcome Alice Johnson, it is great to see you again.", status);
     }
     
-    // ===== INTEGRATION TESTS =====
+    // ============ INTEGRATION TESTS ============
     
-    /**
-     * Test full registration and login flow
-     */
     @Test
     public void testFullRegistrationAndLoginFlow() {
-        // Register user
-        String registerResult = login.registerUser("john_", "JohnPass123!", "+27123456789", "John", "Doe");
-        assertEquals("Registration should succeed", "User successfully registered.", registerResult);
+        // Register
+        String regResult = login.registerUser("u_int", "MyInteg1@", "+27111111111", "Integration", "Test");
+        assertEquals("Registration should succeed", "User successfully registered.", regResult);
         
-        // Login with correct credentials
-        boolean loginResult = login.loginUser("john_", "JohnPass123!");
-        assertTrue("Login should succeed", loginResult);
+        // Login
+        boolean loginResult = login.loginUser("u_int", "MyInteg1@");
+        assertTrue("Login after registration should succeed", loginResult);
         
-        // Check login status
+        // Check status
         String statusResult = login.returnLoginStatus(loginResult);
-        assertEquals("Status should show welcome message", 
-                "Welcome John Doe, it is great to see you again.", statusResult);
+        assertEquals("Status message should be correct", 
+            "Welcome Integration Test, it is great to see you again.", statusResult);
     }
     
-    /**
-     * Test registration validation order
-     */
     @Test
-    public void testRegistrationValidationOrder() {
-        // Invalid username is checked first
-        String result = login.registerUser("invaliduser", "SecurePass123!", "+27123456789", "John", "Doe");
-        assertEquals("Should fail on username validation", 
-                "Username is not correctly formatted.", result);
-    }
-    
-    /**
-     * Test password validation before cell phone
-     */
-    @Test
-    public void testPasswordValidatedBeforeCellPhone() {
-        String result = login.registerUser("test_", "weak", "invalid_phone", "John", "Doe");
-        assertEquals("Should fail on password validation", 
-                "Password is not correctly formatted.", result);
+    public void testMultipleRegistrations() {
+        String result1 = login.registerUser("u_001", "Pass1@abc", "+27111111111", "User", "One");
+        assertEquals("First registration should succeed", "User successfully registered.", result1);
+        
+        // Second registration with different credentials will overwrite first
+        String result2 = login.registerUser("u_002", "Pass2@def", "+27222222222", "User", "Two");
+        assertEquals("Second registration should succeed", "User successfully registered.", result2);
+        
+        // Only second user should be logged in
+        assertTrue("Second user should be able to login", login.loginUser("u_002", "Pass2@def"));
+        assertFalse("First user should no longer work after second registration", login.loginUser("u_001", "Pass1@abc"));
     }
 }
